@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Humanizer;
 using SharpCompress.Archives.Zip;
+using SixLabors.ImageSharp;
 
 namespace art_contest_processing
 {
@@ -24,13 +25,16 @@ namespace art_contest_processing
                 string username = match.Groups[1].Value;
                 int userId = int.Parse(match.Groups[2].Value);
                 string entryName = nameGen.GetNext();
-                handleEntry(username, userId, entryName)
+                var image = Image.Identify(entry.OpenEntryStream());
+                handleEntry(image, username, userId, entryName);
+
             }
         }
 
-        private static void handleEntry(string username, int userId, string entryName)
+        private static void handleEntry(IImageInfo image, string username, int userId, string entryName)
         {
-            System.Console.WriteLine($"Entry by {username} (user id {userId}) assigned \"{entryName}\"");
+            Console.WriteLine($"Entry by {username} (user id {userId}) assigned \"{entryName}\"");
+            Console.WriteLine($"Image dimensions are {image.Width} x {image.Height}");
         }
     }
 
